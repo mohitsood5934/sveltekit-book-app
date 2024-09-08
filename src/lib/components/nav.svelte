@@ -1,11 +1,28 @@
 <script>
+  import { goto } from "$app/navigation";
+
+
   import { page } from "$app/stores";
-  let isLoggedIn = false;
+  import { logout } from "$lib/firebase/auth.client";
+  import authStore from "$lib/stores/auth.store";
+  import messagesStore from "$lib/stores/messages.store";
+
   let isOpen = false;
 
   const toggleNavBar = () => {
     isOpen = !isOpen;
   };
+
+  async function onLogout() {
+    try {
+      await logout();
+      goto('/');
+    } catch(error) {
+      console.log(error);
+      messagesStore.showError();
+
+    }
+  }
 </script>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -25,7 +42,7 @@
     </button>
     <div class:show={isOpen} class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        {#if isLoggedIn}
+        {#if $authStore.isLoggedIn}
           <li class="nav-item">
             <a
               class:active={$page.url.pathname === "/"}
@@ -55,7 +72,7 @@
               href="/about">About</a
             >
           </li>
-          <li class="nav-item">
+          <li class="nav-item" on:click={onLogout}>
             <span class="nav-link">Logout</span>
           </li>
         {:else}
