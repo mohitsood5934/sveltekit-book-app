@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 export async function saveFileToBucket(file, destination) {
     const filePath = await saveFileToDisk(file);
     const uploadResult = await storage.bucket(PUBLIC_STORAGE_BUCKET)
-    .upload(filePath, { destination });
+    .upload(filePath, { destination, public: true });
 
 
 }
